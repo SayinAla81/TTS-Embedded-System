@@ -3,17 +3,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Form Title</title>
+    <title>Please enter your text!</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffc0cb; /* Pink background color */
+        }
+
+        .form-container {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
-<h2>Your Form Title</h2>
+<div class="form-container">
+    <h2>Welcome!<br>Please enter your text.</h2>
 
-<form method="post" action="{% url 'tts:prompt' %}"> <!-- Replace 'your_post_url_name' with the actual URL name for your post endpoint -->
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+    <form method="post" id="promptForm" action="{% url 'tts:prompt' %}"> <!-- Replace 'your_post_url_name' with the actual URL name for your post endpoint -->
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</div>
 
 <!-- JavaScript code to reload the page after form submission -->
 <script>

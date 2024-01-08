@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework import status
 import sqlite3
 import paho.mqtt.client as mqtt
-from database import data
 
 mqtt_broker = 'broker.emqx.io'
 mqtt_port = 1883
@@ -24,28 +23,31 @@ cursor = conn.cursor()
 
 mqtt_client = mqtt.Client()
 
-def on_connect(client, userdata, flags, rc):
-    print("hii")
-    print('connect to code' + str(rc))
-    number = len(data)
-    print(number)
-    for index in range(number):
-        read_text(index)
-
-mqtt_client.on_connect = on_connect
 mqtt_client.connect(mqtt_broker, mqtt_port, 60)
+mqtt_client.loop_start()  # Start the MQTT client loop in a separate thread
 
-def read_text(id):
-    cursor.execute('SELECT text FROM {} WHERE id = ?'.format(table), (id,))
-    result = cursor.fetchone()
+# mqtt_client.loop_forever()
+
+# def on_connect(client, userdata, flags, rc):
+#     print("hii")
+#     print('connect to code' + str(rc))
+#     number = len(data)
+#     print(number)
+#     for index in range(number):
+#         read_text(index)
+
+# mqtt_client.on_connect = on_connect
+
+# def read_text(id):
+#     cursor.execute('SELECT text FROM {} WHERE id = ?'.format(table), (id,))
+#     result = cursor.fetchone()
     
-    if result is not None:
-        text = result[0]
-        mqtt_client.publish(mqtt_topic, str(text))
-        print(text)
-    else:
-        mqtt_client.publish(mqtt_topic, 'invalidId')
-
+#     if result is not None:
+#         text = result[0]
+#         mqtt_client.publish(mqtt_topic, str(text))
+#         print(text)
+#     else:
+#         mqtt_client.publish(mqtt_topic, 'invalidId')
 
 # promptAPIView
 from django.shortcuts import render, redirect
@@ -61,11 +63,10 @@ class promptAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             mqtt_client.publish(mqtt_topic, serializer.data['text'])  # Use serializer.data
-            print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7")
             print(serializer.data['text'])
-            print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7")
             print("sent")
             # Redirect to the same page with a success query parameter
             return redirect(reverse('tts:prompt') + '?success=true')
 
         return render(request, 'form.html', {'form': promptForm(), 'error': 'Invalid form submission'})
+

@@ -3422,36 +3422,27 @@ void setup()
   }
   Serial.println("Coneected to wifi");
 
-  // // setup mqtt
-  // client.setServer(mqtt_broker, mqtt_port);
-  // client.setCallback(callback);
-  // while (!client.connected())
-  // {
-  //   // String client_id = "esp32-client-";
-  //   String client_id = "mqttx_5ad70d12";
-  //   client_id += String(WiFi.macAddress());
-  //   Serial.printf("The client %s connects to the public MQTT broker\n", client_id.c_str());
-  //   if (client.connect(client_id.c_str(), mqtt_username, mqtt_password))
-  //   {
-  //     Serial.println("Public EMQX MQTT broker connected");
-  //     delay(5000);
-  //   }
-  //   else
-  //   {
-  //     Serial.print("failed with state ");
-  //     Serial.print(client.state());
-  //     delay(5000);
-  //   }
-  // }
-}
-
-void intToHexFloat(int value, int &result)
-{
-    float floatValue = static_cast<float>(value);
-    char hexFloat[20];
-    memcpy(&floatValue, &value, sizeof(float));
-    sprintf(hexFloat, "%#x", *(unsigned int *)&floatValue);
-    sscanf(hexFloat, "%x", &result);
+  // setup mqtt
+  client.setServer(mqtt_broker, mqtt_port);
+  client.setCallback(callback);
+  while (!client.connected())
+  {
+    // String client_id = "esp32-client-";
+    String client_id = "mqttx_5ad70d12";
+    client_id += String(WiFi.macAddress());
+    Serial.printf("The client %s connects to the public MQTT broker\n", client_id.c_str());
+    if (client.connect(client_id.c_str(), mqtt_username, mqtt_password))
+    {
+      Serial.println("Public EMQX MQTT broker connected");
+      delay(5000);
+    }
+    else
+    {
+      Serial.print("failed with state ");
+      Serial.print(client.state());
+      delay(5000);
+    }
+  }
 }
 
 void CallApi(String receivedMessage)
@@ -3468,16 +3459,25 @@ void CallApi(String receivedMessage)
     if (makeRequest(Url))
     {
       Serial.println("Request successful");
-      
-      // std::string payload = "salam";
-      const char* payloadCStr = payload.c_str();
-      size_t payloadSize = payload.length() + 1;
-      unsigned char* ans = new unsigned char[payloadSize];
-      for (size_t i = 0; i < payloadSize; ++i) {
-          ans[i] = static_cast<unsigned char>(payloadCStr[i]);
-      }
-XT_Wav_Class ForceWithYou(ans);
-XT_DAC_Audio_Class DacAudio(26, 0);
+
+
+      // Convert payload to hex array
+      // int payloadLength = payload.length();
+      // unsigned char hexArray[payloadLength *2 + 2]; // Each character is represented by 2 hex digits, plus 1 for null terminator
+      // for (int i = 0; i < payloadLength; ++i)
+      // {
+      //   sprintf(reinterpret_cast<char*>(hexArray + i * 2), "%02X", static_cast<unsigned char>(payload[i]));
+      // }
+      // hexArray[payloadLength * 2 + 1] = '\0'; // Null-terminate the hex array
+      // Serial.println(reinterpret_cast<char*>(hexArray));
+
+
+      // const char* payloadCStr = payload.c_str();
+      // size_t payloadSize = payload.length() + 1;
+      // unsigned char* ans = new unsigned char[payloadSize];
+      // for (size_t i = 0; i < payloadSize; ++i) {
+      //     ans[i] = static_cast<unsigned char>(payloadCStr[i]);
+      // }
       // strncpy_P(const_cast<char*>(ans), payloadCStr, payloadSize);
       // unsigned char PROGMEM ans[payload.length()] = payload.c_str();
       
@@ -3487,9 +3487,14 @@ XT_DAC_Audio_Class DacAudio(26, 0);
       //     intToHexFloat((int)payload[i], hexFloatInt);
       //     ans[k++] = hexFloatInt;
       // }
-      DacAudio.FillBuffer();
-      if (ForceWithYou.Completed)
-        DacAudio.PlayWav(&ForceWithYou);
+
+
+
+      // XT_Wav_Class ForceWithYou(hexArray);
+      // XT_DAC_Audio_Class DacAudio(26, 0);
+      // DacAudio.FillBuffer();
+      // if (ForceWithYou.Completed)
+      //   DacAudio.PlayWav(&ForceWithYou);
     }
     else
     {
@@ -3502,6 +3507,7 @@ XT_DAC_Audio_Class DacAudio(26, 0);
 bool makeRequest(String url)
 {
   HTTPClient http;
+
   http.begin(url);
   int httpCode = http.GET();
   if (httpCode > 0)
@@ -3510,7 +3516,6 @@ bool makeRequest(String url)
     {
       payload = http.getString();
       Serial.println("payload");
-      Serial.println(payload);
       return true;
     }
     else
@@ -3545,16 +3550,16 @@ void loop()
   // DacAudio.FillBuffer();
   // if (ForceWithYou.Completed)
   //   DacAudio.PlayWav(&ForceWithYou);
-  CallApi("سلام");
+  // CallApi("سلام");
   // delay(10000);
-  // client.subscribe(topic);
-  // Serial.println("HELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLO");
-  // Serial.println(receivedMessage);
-  // if (!receivedMessage.isEmpty())
-  // {
-  //   CallApi(receivedMessage);
-  //   client.publish(topic, receivedMessage.c_str());
-  //   receivedMessage = "";
-  // }
-  // client.loop();
+  client.subscribe(topic);
+  Serial.println("HELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLO");
+  Serial.println(receivedMessage);
+  if (!receivedMessage.isEmpty())
+  {
+    CallApi(receivedMessage);
+    client.publish(topic, receivedMessage.c_str());
+    receivedMessage = "";
+  }
+  client.loop();
 }
