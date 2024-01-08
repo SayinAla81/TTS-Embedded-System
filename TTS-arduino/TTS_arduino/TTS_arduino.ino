@@ -3421,6 +3421,8 @@ unsigned char PROGMEM TEST[40923] = {
 
 WiFiClient espClient;
 PubSubClient client(espClient);
+XT_Wav_Class ForceWithYou(TEST);
+XT_DAC_Audio_Class DacAudio(26, 0);
 
 // WiFi
 String ssid = "Mmm";
@@ -3442,7 +3444,6 @@ void setup()
   Serial.begin(4800);
   WiFi.disconnect();
   WiFi.begin(ssid, password);
-  Serial.println("log");
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.println("Connecting...");
@@ -3581,8 +3582,6 @@ void callback(char *topic, byte *payload, unsigned int length)
 
 void run1()
 {
-  XT_Wav_Class ForceWithYou(TEST);
-  XT_DAC_Audio_Class DacAudio(26, 0);
   DacAudio.FillBuffer();
   if (ForceWithYou.Completed)
     DacAudio.PlayWav(&ForceWithYou);
@@ -3604,6 +3603,6 @@ void run2()
 
 void loop()
 {
-  run1();
-  // run2();
+  // run1();
+  run2();
 }
