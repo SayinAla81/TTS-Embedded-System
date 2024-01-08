@@ -3418,6 +3418,7 @@ unsigned char PROGMEM TEST[40923] = {
     0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F,
     0x7F, 0x7F, 0x7F};
 
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -3471,7 +3472,7 @@ void setup()
   }
 }
 
-void CallApi(String receivedMessage, int mode)
+void CallApi(String receivedMessage)
 {
   String persianText = receivedMessage;
   persianText.trim();
@@ -3590,7 +3591,7 @@ void run1()
 void run2()
 {
   client.subscribe(topic);
-  Serial.println("HELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLO");
+  // Serial.println("--------------------");
   Serial.println(receivedMessage);
   if (!receivedMessage.isEmpty())
   {
@@ -3604,5 +3605,5 @@ void run2()
 void loop()
 {
   run1();
-  run2();
+  // run2();
 }
