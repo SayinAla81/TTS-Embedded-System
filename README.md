@@ -34,7 +34,6 @@ This project demonstrates a system where users can input text on a local web int
 1. **Install Dependencies**:
    ```bash
    pip install django paho-mqtt
-  ```
 
 2. **Start the Django Project**:
     ```bash
