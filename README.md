@@ -37,9 +37,9 @@ This project demonstrates a system where users can input text on a local web int
   ```
 
 2. **Start the Django Project**:
-```bash
-python manage.py runserver
-```
+    ```bash
+    python manage.py runserver
+    ```
 3. **Open the local web interface in your browser**: http://127.0.0.1:8000/.
 
 ### ESP32
