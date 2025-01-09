@@ -98,10 +98,6 @@ This project demonstrates a system where users can input text on a local web int
 4. Enter text and submit the form.
 5. The ESP32 receives the text, converts it into speech, and plays it through the speaker.
 
-### Contributing
-Feel free to submit issues or pull requests to improve the project.
-
----
 
 ---
 
@@ -117,4 +113,4 @@ Feel free to submit issues or pull requests to improve the project.
 
 Supervised by:
 
-- **Dr. Diyanat**
+- **Dr. Hosseini Monazzah**
