@@ -103,11 +103,18 @@ Feel free to submit issues or pull requests to improve the project.
 
 ---
 
-### License
-This project is licensed under the MIT License.
-
 ---
 
 ### Acknowledgments
 - Thanks to the developers of Django and Arduino for making such robust tools.
 - MQTT communication made possible by the PubSubClient library.
+
+
+## Contributors
+
+- **Sayin Ala**
+- **Golbarg Sepehrara**
+
+Supervised by:
+
+- **Dr. Diyanat**
